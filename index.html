@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta name="description" content="">
+  <meta name="author" content="PK">
+  <title>Configuration</title>
+
+  <style>
+    html, body {
+      height: 100%;
+    }
+    h3 {
+      color: darkslategray;
+      text-align: center;
+    }
+
+    div {
+      margin: 10px;
+    }
+
+    .list-none {
+      list-style: none;
+    }
+
+    .btn {
+      margin: 15px 15px 15px 15px;
+      width: -webkit-fill-available;
+      max-width: 300px;
+    }
+
+  </style>
+
+
+
+  <!-- Custom JavaScript -->
+  <script>
+    HOME = "http:127.0.0.1:3000";
+    var _g = { networks: [], creds: [], networks_status: 'na' };
+    /*
+    GET networks: `status: scanning/done/fail, networks: [ { ssid: <ssid> }, { ssid: <ssid> } ... ]`
+    POST creds: `{ ssid: <ssid>, password: <password> } - saves and restarts wifi`
+    */
+
+    var getJSON = function(url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.responseType = 'json';
+      xhr.onload = callback;
+      xhr.send();
+    };
+    
+    function network_cb() {
+      if( this.responseType == "json" ) {
+        _g.networks = this.response.networks;
+        _g.networks_status = this.response.status;
+        update_display();
+      } else {
+        console.log( "GOT here");
+      }
+    };
+
+    function update_display() {
+      var networks_list = document.getElementById('networks-list-id');
+      document.getElementById('btn-rescan-id').disabled = (_g.networks_status != 'done');
+
+      while (networks_list.firstChild) {
+        networks_list.removeChild(networks_list.firstChild);
+      }
+      for(var i = 0; i < _g.networks.length; i++) {
+        var li = document.createElement('li');
+        var btn = document.createElement('button');
+        btn.innerText = _g.networks[i].ssid;
+        btn.setAttribute("class", "btn");
+        btn.onclick = function() {
+          document.getElementById('network').value=this.innerText;
+        };
+        li.append(btn);
+        networks_list.append(li);
+      }
+    };
+
+    function init_page() {
+      getJSON("/networks", network_cb);
+    };
+  </script>
+
+</head>
+
+<body onload="init_page()">
+
+  <main id="my-app-id">
+      <div>
+        <h3>Available Networks</h3>
+        <ul id="networks-list-id" class="list-none">
+        </ul>
+        <button id="btn-rescan-id">Rescan Networks</button>
+      </div>
+
+    <h3>Set Credentials</h3>
+    <form action="/creds" method="POST">
+      <div>
+        <label for="network">Network</label>
+        <input name="network" id="network" value="my_ssid">
+      </div>
+      <div>
+        <label for="password">SSID Password</label>
+        <input name="password" type="password" id="password" value="my_pass">
+      </div>
+      <div>
+        <button>Send Credentials</button>
+      </div>
+    </form>
+
+  </main>
+
+
+</body>
+</html>

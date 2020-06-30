@@ -1,0 +1,17 @@
+{
+  "name": "api_test_server",
+  "version": "1.0.0",
+  "description": "Testing utility for API.",
+  "main": "index.js",
+  "author": "kangasp",
+  "bin": {
+    "api_test_server": "./index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {},
+  "keywords": []
+}
