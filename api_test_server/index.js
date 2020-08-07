@@ -13,7 +13,6 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
-
 const port = 3000
 
 var d = {
@@ -27,19 +26,19 @@ var d = {
 }
 
 
-
 router.get('/', function (req, res) {
     res.sendFile("D:\\pk\\prj\\captive_config\\index.html");
 });
 
 app.get('/networks', function (req, res) {
-    // console.log(req.body);
     setTimeout( function() { res.send(d.network);}, 800);
 });
 router.post('/creds', function (req, res) {
     var ssid=req.body.network;
     var password=req.body.password;
-    res.redirect('/');
+    console.log("Got ssid: " + ssid );
+    console.log("Got password: " + password );
+    res.status(201).send("Connecting to " + ssid);
 });
 
 
