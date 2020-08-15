@@ -21,7 +21,20 @@ var d = {
     POST creds: `{ ssid: <ssid>, password: <password> } - saves and restarts wifi`
     */
     network: { status: 'done', 
-               networks: [ { ssid: "ssid_1" }, { ssid: "ssid_2" }, { ssid: "ssid_3" }, { ssid: "ssid_4" } ] },
+               networks: [  { ssid: "ssid_1" }, 
+                            { ssid: "ssid_2" },
+                            { ssid: "ssid_3" },
+                            { ssid: "ssid_4" },
+                            { ssid: "ssid_5" },
+                            { ssid: "ssid_6" },
+                            { ssid: "ssid_7" },
+                            { ssid: "ssid_8" },
+                            { ssid: "ssid_9" },
+                            { ssid: "ssid_a" },
+                            { ssid: "ssid_s" },
+                            { ssid: "ssid_d" },
+                            { ssid: "ssid_f" },
+                            { ssid: "ssid_g" } ] },
     creds: { ssid: "my_ssid", password: "my_pass" }
 }
 
@@ -31,7 +44,12 @@ router.get('/', function (req, res) {
 });
 
 app.get('/networks', function (req, res) {
-    setTimeout( function() { res.send(d.network);}, 800);
+    var num = Math.floor(Math.random() * Math.floor(d.network.networks.length));
+    var dat = {
+        status: 'done',
+    };
+    dat.networks = d.network.networks.slice(0, num);
+    setTimeout( function() { res.send(dat);}, 800);
 });
 router.post('/creds', function (req, res) {
     var ssid=req.body.network;

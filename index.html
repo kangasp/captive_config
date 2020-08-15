@@ -10,33 +10,112 @@
   <meta name="author" content="PK">
   <title>Configuration</title>
 
+
   <style>
     html, body {
       height: 100%;
       text-align: center;
+      margin: 0px;;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
+    h1 {
+      color: #FFF;
+      text-align: center;
+      margin: 0px;
+      font-weight: 400;
+      font-size: 1.75rem;
     }
 
     h3 {
-      color: darkslategray;
+      color: #FFF;
+      text-align: center;
+      margin: 0px;
+      font-weight: 400;
+      font-size: 1.25rem;
     }
 
-    div {
-      margin: 5px;
+    .form-div {
+      margin: 10px;
     }
 
-    #body-outline {
-      background-color: antiquewhite;
-      padding: 15px;
+
+    .header {
+      background-color: #343a40;
+      margin: 0px;
+      position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    }
+
+    .header-small {
+      background-color: #3b4957;
+      margin: 0px;
+      position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    border: 1px solid;
     }
 
     .list-none {
       list-style: none;
+      height: 19rem;
+      overflow: hidden;
+      overflow-y: scroll;
+      padding: 0px;
+    }
+
+    .btn-go {
+      background-color: #FFF;
+    font-weight: 700;
+    border-radius: .5rem;
+    color: #007bff;
+    font-size: 1rem;
+    }
+
+    .btn-send {
+          background-color: #FFF;
+    font-weight: 400;
+    border-radius: .5rem;
+    color: #007bff;
+    font-size: 1rem;
     }
 
     .btn {
-      margin: 5px 15px 5px 1px;
-      width: -webkit-fill-available;
+      margin: 5px 5px 5px 5px;
       max-width: 400px;
+      width: -webkit-fill-available;
+      color: white;
+    background-color: #007bff;
+    border-color: #007bff;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s
     }
 
   </style>
@@ -70,13 +149,20 @@
       }
     };
 
+    function clear_children(mom) {
+      while (mom.firstChild) {
+        mom.removeChild(mom.firstChild);
+      }
+    };
+
     function update_display() {
       var networks_list = document.getElementById('networks-list-id');
+      clear_children(networks_list);
+      document.getElementById('thinking-id').style.display = "none";
       document.getElementById('btn-rescan-id').disabled = (_g.networks_status != 'done');
 
-      while (networks_list.firstChild) {
-        networks_list.removeChild(networks_list.firstChild);
-      }
+      if( _g.networks ) {
+
       for(var i = 0; i < _g.networks.length; i++) {
         var li = document.createElement('li');
         var btn = document.createElement('button');
@@ -89,47 +175,57 @@
         li.append(btn);
         networks_list.append(li);
       }
+    }
     };
 
     function get_networks() {
+      var networks_list = document.getElementById('networks-list-id');
+      clear_children(networks_list);
+      document.getElementById('thinking-id').style.display = "block";
       getJSON("/networks", network_cb);
     };
 
     function init_page() {
       get_networks();
     };
+
+    function fireOnReady() {
+      if (document.readyState === 'complete') {
+        init_page();
+      } else {
+        document.addEventListener("DOMContentLoaded", fireOnReady);
+      }
+    };
+
   </script>
 
 </head>
 
-<body onload="init_page()">
-
+<body onload="fireOnReady()">
   <main id="my-app-id">
-    <div id="body-outline">
+  <div class="header">
+    <h1>Available Networks</h1>
+    <button class="btn-go" id="btn-rescan-id" onclick="get_networks()">&#x21bb</button>
+  </div>
       <div>
-        <div>
-        <h3>Available Networks</h3>
-        <button id="btn-rescan-id" onclick="get_networks">Rescan Networks</button>
-        </div>
+        <p id="thinking-id">looking...</p>
         <ul id="networks-list-id" class="list-none">
         </ul>
       </div>
-
-    <h3>Set Credentials</h3>
     <form action="/creds" method="POST">
-      <div>
+      <div class="header">
+        <h3>Set Credentials</h3>
+         <button class="btn-go">></button>
+      </div>
+      <div class="form-div">
         <label for="network">Network</label>
         <input name="network" id="network" value="my_ssid">
       </div>
-      <div>
+      <div class="form-div">
         <label for="password">SSID Password</label>
         <input name="password" type="password" id="password" value="my_pass">
       </div>
-      <div>
-        <button>Send Credentials</button>
-      </div>
     </form>
-    </div>
   </main>
 
 </body>
